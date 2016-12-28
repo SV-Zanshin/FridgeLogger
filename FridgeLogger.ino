@@ -2,7 +2,8 @@
 ** Program to monitor refrigerator data using a minimal breadboarded Atmel ATMega 328 processor with the Arduino  **
 ** bootloader and development environment. I used some of the hardware lying around to put this project together. **
 **                                                                                                                **
-** Program code and Fritzing schematic for this project are to be found at
+** Program code and Fritzing schematic for this project are to be found at                                        **
+** https://github.com/SV-Zanshin/FridgeLogger/blob/master/Images/FridgeLogger_bb.png                              **
 **                                                                                                                **
 ** The hardware used is as follows:                                                                               **
 **     - ATMega 328-PU Processor using the Arduino Bootloader                                                     **
