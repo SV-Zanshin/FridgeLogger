@@ -2,7 +2,7 @@
 ** Program to monitor refrigerator data using a minimal breadboarded Atmel ATMega 328 processor with the Arduino  **
 ** bootloader and development environment. I used some of the hardware lying around to put this project together. **
 **                                                                                                                **
-** Program code and Fritzing schematic for this project are to be found at
+** Program code and board schematic for can be found on GitHub at https://github.com/SV-Zanshin/FridgeLogger      **
 **                                                                                                                **
 ** The hardware used is as follows:                                                                               **
 **     - ATMega 328-PU Processor using the Arduino Bootloader                                                     **
@@ -48,6 +48,7 @@
 **                                                                                                                **
 ** Vers.   Date       Developer           Comments                                                                **
 ** ======= ========== =================== ======================================================================= **
+** 1.0.1   2016-12-28 Arnd@SV-Zanshin.Com Added error checking for DS1307 returned date/time                      **
 ** 1.0.0   2016-12-27 Arnd@SV-Zanshin.Com Implemented                                                             **
 ** 1.0.0b2 2016-12-25 Arnd@SV-Zanshin.Com Added SD-Card                                                           **
 ** 1.0.0b1 2016-12-25 Arnd@SV-Zanshin.Com Initial coding.                                                         **
@@ -69,7 +70,7 @@ const uint16_t MEASUREMENT_MILLIS    =   5000;                                //
 const uint16_t TIMER1_265DIV_10HZ    =  59286;                                // 65536 - (16Mhz/256/10)           //
 const uint32_t SERIAL_SPEED          = 115200;                                // Use fast serial speed            //
 const uint8_t  ONE_WIRE_PIN          =      4;                                // Digital Pin 2 for 1-Wire MicroLAN//
-const char     FILE_PREFIX           = "GF";
+const char     FILE_PREFIX[3]        =   "GF";                                // Define output file prefix        //
 /*******************************************************************************************************************
 ** Declare global variables and instantiate classes                                                               **
 *******************************************************************************************************************/
@@ -164,7 +165,7 @@ void setup() {                                                                //
   pinMode(CS_PIN,OUTPUT);                                                     // Declare CS_PIN as an output pin  //
   Serial.begin(SERIAL_SPEED);                                                 // Start serial communications      //
   ThermometersFound = DSFamily.ScanForDevices();                              // Search for thermometers on 1-Wire//
-  Serial.print(F("\n\nGosforthFridge Monitor V1.0.0b\n"));                    // Display program information      //
+  Serial.print(F("\n\nFridgeLogger V1.0.1b\n"));                              // Display program information      //
   INA219.begin(INA219_I2C_ADDRESS);                                           // Start the INA219 breakout        //
   INA219.setCalibration_16V_400mA();                                          // Lowest voltage / highest accuracy//
   rtc.begin();                                                                // Start the RTC interface          //
@@ -220,6 +221,7 @@ void loop() {                                                                 //
   Serial.print(F("     "));                                                   //                                  //
   Serial.println((INA219_BusV/INA219_Readings)*(INA219_mA/INA219_Readings),2);//                                  //
   now = rtc.now();                                                            // Get the Date and Time from DS1307//
+  while (now.year()>(uint16_t)2100) now = rtc.now;                            // RTC returns bad value sometimes  //
   cli();                                                                      // disable interrupts               //
   sprintf(sprintfBuffer,"%04d-%02d-%02d,%02d:%02d:%02d,%d.%02d,%d.%02d",      // Build up the output line using   //
         now.year(),now.month(),now.day(),                                     // formatting and avoiding floating //
@@ -236,9 +238,11 @@ void loop() {                                                                 //
   dataFile.print(sprintfBuffer);                                              // Write to SD-Card                 //
   Serial.print(sprintfBuffer);                                                // Display to serial port           //
   for(uint8_t i=0;i<DSFamily.ThermometersFound;i++) {                         // Loop for each thermometer  found //
-    sprintf(sprintfBuffer,",%d",DSFamily.ReadDeviceTemp(i));                  // Read and format value            //
-    dataFile.print(sprintfBuffer);                                            // Write to SD-Card                 //
-    Serial.print(sprintfBuffer);                                              // Display to serial port           //
+    Serial.print(F(","));                                                     // display to serial port           //
+    dataFile.print(F(","));                                                   // format output line               //
+    int16_t temperature = DSFamily.ReadDeviceTemp(i);                         // Read the raw temperature value   //
+    Serial.print(temperature);                                                // write output                     //
+    dataFile.print(temperature);                                              // write output                     //
   } // for-next every thermometer loop                                        //                                  //
   DSFamily.DeviceStartConvert();                                              // Start conversion on all devices  //
   dataFile.println();                                                         // Write to SD-Card                 //
