@@ -13,4 +13,4 @@ The standard Arduino libraries are used as well as the specific ones for the Spa
 ## Output Files
 The output is written to files on the SD-Card, with a new file started each day. The filename format is "GFYYMMDD.CSV" and the format is a DOS comma-separated variable file. The temperature readings in the file aren't in degrees Celsius, but in the 12-bit internal format used by the DS-Family of devices. Multiply the temperature readings by 0.0625°C to get degrees Celsius.
 
-![Zanshin Logo](https://www.sv-zanshin.com/images/gif/zanshinkanjitiny.gif) <img src="https://www.sv-zanshin.com/images/gif/zanshintext.gif" width="75"/>
+![Zanshin Logo](https://www.sv-zanshin.com/r/images/site/gif/zanshinkanjitiny.gif) <img src="https://www.sv-zanshin.com/r/images/site/gif/zanshintext.gif" width="75"/>
