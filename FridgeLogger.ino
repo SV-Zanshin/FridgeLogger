@@ -2,12 +2,8 @@
 ** Program to monitor refrigerator data using a minimal breadboarded Atmel ATMega 328 processor with the Arduino  **
 ** bootloader and development environment. I used some of the hardware lying around to put this project together. **
 **                                                                                                                **
-<<<<<<< HEAD
-** Program code and board schematic for can be found on GitHub at https://github.com/SV-Zanshin/FridgeLogger      **
-=======
-** Program code and Fritzing schematic for this project are to be found at                                        **
+** Program code can be found on GitHub at https://github.com/SV-Zanshin/FridgeLogger and board schematics at      **
 ** https://github.com/SV-Zanshin/FridgeLogger/blob/master/Images/FridgeLogger_bb.png                              **
->>>>>>> origin/master
 **                                                                                                                **
 ** The hardware used is as follows:                                                                               **
 **     - ATMega 328-PU Processor using the Arduino Bootloader                                                     **
@@ -84,13 +80,13 @@ DSFamily_Class    DSFamily(ONE_WIRE_PIN);                                     //
 RTC_DS1307        rtc;                                                        // Real-time-clock instantiation    //
 char              sprintfBuffer[SPRINTF_BUFFER_SIZE];                         // Define buffer for sprintf        //
 DateTime          now;                                                        // Define class to hold date & time //
+File              dataFile;                                                   // Instantiate the SD file class    //
 volatile uint16_t INA219_Readings   = 0;                                      // Number of INA219 readings done   //
 volatile float    INA219_ShuntV     = 0;                                      // Sum for averaging Shunt Voltage  //
 volatile float    INA219_BusV       = 0;                                      // Sum for averaging Bus Voltage    //
 volatile float    INA219_mA         = 0;                                      // Sum for averaging MilliAmperes   //
 uint16_t          ThermometersFound = 0;                                      // Store device detected count      //
 uint8_t           Today             = UINT8_MAX;                              // Current day-of-week              //
-File              dataFile;                                                   // Instantiate the SD file class    //
 /*******************************************************************************************************************
 ** Declare prototypes for all functions used                                                                      **
 *******************************************************************************************************************/
@@ -154,9 +150,9 @@ void openFile() {                                                             //
         dataFile.println();                                                   // Terminate line                   //
       } // of if-then we have an empty file                                   //                                  //
     } else {                                                                  //                                  //
-        Serial.print(F("Error opening \""));                                  //                                  //
-        Serial.print(sprintfBuffer);                                          //                                  //
-        Serial.print(F("\"\n"));                                              //                                  //
+      Serial.print(F("Error opening \""));                                    //                                  //
+      Serial.print(sprintfBuffer);                                            //                                  //
+      Serial.print(F("\"\n"));                                                //                                  //
     } // if-then-else file could be opened                                    //                                  //
   } // we have a new day and need to open a new file                          //                                  //
 } // of method openFile()                                                     //                                  //
